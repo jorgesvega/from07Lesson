@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models/location.dart';
+import 'location_detail.dart';
 import 'styles.dart';
 
 class LocationList extends StatelessWidget {
@@ -13,16 +14,30 @@ class LocationList extends StatelessWidget {
         appBar: AppBar(title: Text("Locations", style: Styles.navBarTitle)),
         body: ListView.builder(
           itemCount: this.locations.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              contentPadding: EdgeInsets.all(10.0),
-              leading: _itemThumbnail(this.locations[index]),
-              title: _itemTitle(this.locations[index]),
-            );
-          },
+          itemBuilder: _listViewItemBuilder, // Passing as a value. ItemBuilder property is a callback, expecting a function definition. A func that specifically takes a context and an int as parameters, and return a widget.
         ),
     );
   }
+
+Widget _listViewItemBuilder(BuildContext context, int index) {
+  var location = this.locations[index];
+  return ListTile(
+    contentPadding: EdgeInsets.all(10.0),
+    leading: _itemThumbnail(location),
+    title: _itemTitle(location),
+    onTap: () => _navigateToLocationDetail(context, location),  
+  );
+}
+
+void _navigateToLocationDetail(BuildContext context, Location location) {
+  Navigator.push(
+    context, 
+    MaterialPageRoute(
+      builder: (context) => LocationDetail(location), // This syntax is to avoid the use of curly braces for a simple expression
+  ));
+}
+
+
 
   Widget _itemThumbnail(Location location) {
     return Container(
@@ -32,6 +47,6 @@ class LocationList extends StatelessWidget {
   }
 
     Widget _itemTitle(Location location) {
-    return Text('>> ${location.name}', style: Styles.textDefault);
+    return Text('>> ${location.name}', style: Styles.textDefault); // Using String interpolation
   }
 }
